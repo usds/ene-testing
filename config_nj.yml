@@ -1,0 +1,10 @@
+---
+# This file is used to configure the test case generator
+# Ideally this file would conform to a YAML schema
+
+version: 1
+
+fpl_year: 2023
+fpl_limits:
+  adult_limit: 138
+  child_limit: 147

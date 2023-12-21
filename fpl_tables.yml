@@ -1,0 +1,13 @@
+---
+# From https://www.healthcare.gov/glossary/federal-poverty-level-fpl/
+# Assumes every additional household member adds a linear amount
+
+version: 1
+
+fpl_tables:
+  2022:
+    base: 13590
+    increment: 4720
+  2023:
+    base: 14580
+    increment: 5140
