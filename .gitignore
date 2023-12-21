@@ -1,0 +1,4 @@
+# Ignore the directory where the test instances get generated
+# Currently this location is hardcoded into the generator
+
+test_outputs/
