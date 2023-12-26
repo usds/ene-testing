@@ -3,7 +3,7 @@
 # We currently don't have a way to make the income variables formal enumerations
 
 test_name: Individualized Eligibility 1
-test_description: Each member of the household should be tested for program eligibility individually, using the threshold that applies to the individual, regardless of the determination or status of any others in the household.
+test_description: Amcit single parent making just below child eligibility limit. Each member of the household should be tested for program eligibility individually, using the threshold that applies to the individual, regardless of the determination or status of any others in the household.
 test_inputs:
   - household_id: 1
     persons:
