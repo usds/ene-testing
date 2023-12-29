@@ -48,12 +48,13 @@ def find_reason(person):
     if mitc2bool(person['CHIP Eligible']) and 'CHIP Category' in person:
         return person['CHIP Category']
     eligiblity = is_eligibile(person)
-    for determination in person['Determinations'].values():
-        indication = mitc2bool(determination['Indicator'])
+    for key, value in person['Determinations'].items():
+        indication = mitc2bool(value['Indicator'])
         if indication != eligiblity:
             continue
-        if 'Ineligibility Reason' in determination:
-            return determination['Ineligibility Reason']
+        if 'Ineligibility Reason' in value:
+            return value['Ineligibility Reason']
+        return key
     return ''
 
 def is_eligibile(person):

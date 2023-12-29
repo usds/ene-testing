@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import os
 import sys
 import unittest
@@ -36,13 +37,20 @@ class TestExecutor(unittest.TestCase):
 
 
 if __name__ == '__main__':
+	parser = argparse.ArgumentParser(
+		prog='executor.py',
+		description='Execute tests against Medicaid eligibility backends')
+	parser.add_argument('-c', '--config', default='config_nj.yml')
+	parser.add_argument('-t', '--test', default=None)
+	args = parser.parse_args()
+
 	# for now assume only one cmd line parameter, the name of the config file
-	config_filename = "config_nj.yml"
-	if len(sys.argv) > 1:
-		config_filename = str(sys.argv[1])
+	config_filename = args.config
 	executor = TestExecutor(config_filename)
 	files = [f for f in os.listdir('./test_templates') if f.endswith('yml')]
 	files.sort()
+	if args.test is not None:
+		files = [ args.test ]
 	for f in files:
 		template_name = f.split('.')[0]
 		print()
@@ -54,4 +62,3 @@ if __name__ == '__main__':
 		except AssertionError as fail:
 			print("FAIL")
 			print(fail)
-
