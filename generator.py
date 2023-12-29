@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # We want to take in the config, the test case, the FPL table and
 # output the test case file but with actual numbers generated
 # by applying the FPL
@@ -18,6 +19,7 @@ class TestGenerator:
 	def __init__(self, config_filename = "config_aa.yml"):
 		self.config_filename = config_filename
 		self.config = self.open_file(config_filename)
+		self.locality = self.config["locality"]
 		fpl_table_object = self.open_file("fpl_tables.yml")
 		self.fpl_tables = fpl_table_object["fpl_tables"]
 
@@ -86,11 +88,11 @@ class TestGenerator:
 			case _:
 				return dollar_amount
 
-	def generate_test(self, test_case_filename, output_dir = "test_outputs", output_filename_suffix = "_instance.json"):
-		test_case_input_data = (self.parse_test_case(test_case_filename + ".yml"))["test_inputs"]
+	def generate_test(self, test_case_name, output_dir = "test_outputs", output_filename_suffix = "_instance.json"):
+		test_case_input_data = (self.parse_test_case(os.path.join("test_cases", test_case_name + ".yml")))["test_inputs"]
 		data = self.generate_test_data(test_case_input_data)
 
-		output_filename = output_dir + "/" + test_case_filename + "_" + self.config_filename + output_filename_suffix
+		output_filename = output_dir + "/" + test_case_name + "_" + self.locality + output_filename_suffix
 		os.makedirs(os.path.dirname(output_filename), exist_ok=True)
 		with open(output_filename, "w") as output_file_data:
 			json.dump(data, output_file_data)
@@ -100,4 +102,4 @@ config_filename = "config_nj.yml"
 if len(sys.argv) > 1:
 	config_filename = str(sys.argv[1])
 testGen = TestGenerator(config_filename)
-testGen.generate_test("testcase00001")
+testGen.generate_test("00001")

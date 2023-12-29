@@ -4,6 +4,8 @@
 
 version: 1
 
+locality: NJ
+
 fpl_year: 2023
 fpl_limits:
   adult_limit: 138
