@@ -33,8 +33,10 @@ class TestGenerator:
 			except yaml.YAMLError as exc:
 				print(exc)
 
-	def parse_test_case(self, test_case_file):
-		test_data = self.open_file(test_case_file)
+	def parse_test_template(self, test_template_name):
+		test_data = self.open_file(os.path.join(
+			"test_templates",
+			test_template_name + ".yml"))
 		return test_data
 
 	def generate_test_data(self, test_case):
@@ -98,26 +100,24 @@ class TestGenerator:
 			case _:
 				return dollar_amount
 
-	def generate_test(self, test_template_name):
-		test_case_template = self.parse_test_case(os.path.join(
-				"test_templates",
-				test_template_name + ".yml"))
+	def generate_test_json(self, test_template_name):
+		test_case_template = self.parse_test_template(test_template_name)
 		data = self.generate_test_data(test_case_template)
 
 		producer = protocols.producers[self.format]
-		return json.dumps(producer(data))
+		return producer(data)
 
 	def generate_test_file(
 			self,
 			test_template_name,
 			output_dir = "test_inputs",
 			input_filename_suffix = "_input.json"):
-		data = self.generate_test(test_template_name)
+		data = self.generate_test_json(test_template_name)
 
 		output_filename = output_dir + "/" + test_template_name + "_" + self.locality + input_filename_suffix
 		os.makedirs(os.path.dirname(output_filename), exist_ok=True)
 		with open(output_filename, "w") as output_file_data:
-			output_file_data.write(data)
+			json.dump(data, output_file_data)
 
 if __name__ == '__main__':
 	# for now assume only one cmd line parameter, the name of the config file
@@ -125,4 +125,8 @@ if __name__ == '__main__':
 	if len(sys.argv) > 1:
 		config_filename = str(sys.argv[1])
 	testGen = TestGenerator(config_filename)
-	testGen.generate_test_file("00001")
+	files = [f for f in os.listdir('./test_templates') if f.endswith('yml')]
+	for f in files:
+		template_name = f.split('.')[0]
+		print(f'Generating {template_name} for {testGen.locality}]')
+		testGen.generate_test_file(template_name)

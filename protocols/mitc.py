@@ -31,38 +31,67 @@ class MITC:
             mitc['Physical Households'].append(mitc_house)
 
         return mitc
-    
+        
     def consume(mitc):
-        usds = mitc
-        usds
+        usds = []
+        for person in mitc['Applicants']:
+            usds.append({
+                'person_id': person['Person ID'],
+                'is_eligible': is_eligibile(person),
+                'reason': find_reason(person),
+            })
+        return usds
 
-def mitc_bool(tf):
+def find_reason(person):
+    if 'Ineligibility Reason' in person:
+        return person['Ineligibility Reason'][0]
+    if mitc2bool(person['CHIP Eligible']) and 'CHIP Category' in person:
+        return person['CHIP Category']
+    eligiblity = is_eligibile(person)
+    for determination in person['Determinations'].values():
+        indication = mitc2bool(determination['Indicator'])
+        if indication != eligiblity:
+            continue
+        if 'Ineligibility Reason' in determination:
+            return determination['Ineligibility Reason']
+    return ''
+
+def is_eligibile(person):
+    return (
+        mitc2bool(person['Medicaid Eligible']) or
+        mitc2bool(person['CHIP Eligible'])
+    )
+    
+def mitc2bool(yn):
+    return yn == 'Y'
+
+def bool2mitc(tf):
     return 'Y' if tf else 'N'
 
 def produce_person(usds):
     mitc = {}
     mitc['Applicant Age'] = usds['age']
-    mitc['Applicant Age >= 90'] = mitc_bool(usds['age'] > 90)
-    mitc['Applicant Attest Blind or Disabled'] = mitc_bool(usds['has_abd_status'])
-    mitc['Applicant Attest Long Term Care'] = mitc_bool(usds['long_term_care'])
-    mitc['Applicant Post Partum Period Indicator'] = mitc_bool(usds['is_post_partum'])
-    mitc['Applicant Pregnant Indicator'] = mitc_bool(usds['is_pregnant'])
-    mitc['Claimed as Dependent by Person Not on Application'] = mitc_bool(usds['claimed_dependent'])
-    mitc['Former Foster Care'] = mitc_bool(usds['former_foster_care'])
-    mitc['Has Insurance'] = mitc_bool(usds['has_insurance'])
+    mitc['Applicant Age >= 90'] = bool2mitc(usds['age'] > 90)
+    mitc['Applicant Attest Blind or Disabled'] = bool2mitc(usds['has_abd_status'])
+    mitc['Applicant Attest Long Term Care'] = bool2mitc(usds['long_term_care'])
+    mitc['Applicant Post Partum Period Indicator'] = bool2mitc(usds['is_post_partum'])
+    mitc['Applicant Pregnant Indicator'] = bool2mitc(usds['is_pregnant'])
+    mitc['Claimed as Dependent by Person Not on Application'] = bool2mitc(usds['claimed_dependent'])
+    mitc['Former Foster Care'] = bool2mitc(usds['former_foster_care'])
+    mitc['Has Insurance'] = bool2mitc(usds['has_insurance'])
     mitc['Hours Worked Per Week'] = usds['weekly_work_hours']
-    mitc['Incarceration Status'] = mitc_bool(usds['is_incarcerated'])
+    mitc['Incarceration Status'] = bool2mitc(usds['is_incarcerated'])
     mitc['Income'] = produce_income(usds['income_distribution'])
-    mitc['Is Applicant'] = mitc_bool(usds['is_applicant'])
-    mitc['Lives In State'] = mitc_bool(usds['lives_in_state'])
-    mitc['Medicare Entitlement Indicator'] = mitc_bool(usds['is_medicare_eligible'])
+    mitc['Is Applicant'] = bool2mitc(usds['is_applicant'])
+    mitc['Lives In State'] = bool2mitc(usds['lives_in_state'])
+    mitc['Medicare Entitlement Indicator'] = bool2mitc(usds['is_medicare_eligible'])
     mitc['Person ID'] = usds['person_id']
-    mitc['Prior Insurance'] = mitc_bool(usds['prior_insurance'])
+    mitc['Prior Insurance'] = bool2mitc(usds['prior_insurance'])
     mitc['Relationships'] = produce_relations(usds['relationships'])
-    mitc['Required to File Taxes'] = mitc_bool(usds['must_file_taxes'])
-    mitc['State Health Benefits Through Public Employee'] = mitc_bool(usds['state_health_benefits'])
-    mitc['Student Indicator'] = mitc_bool(usds['is_student'])
-    mitc[ 'US Citizen Indicator'] = mitc_bool(usds['is_citizen'])
+    mitc['Required to File Taxes'] = bool2mitc(usds['must_file_taxes'])
+    mitc['State Health Benefits Through Public Employee'] = bool2mitc(usds['state_health_benefits'])
+    mitc['Student Indicator'] = bool2mitc(usds['is_student'])
+    mitc[ 'US Citizen Indicator'] = bool2mitc(usds['is_citizen'])
     return mitc
 
 IMCOME_TYPES = {
@@ -91,7 +120,7 @@ def produce_relations(usds):
     for link in usds:
         mitc.append(
             {
-                'Attest Primary Responsibility': mitc_bool(link['attests_responsibility']),
+                'Attest Primary Responsibility': bool2mitc(link['attests_responsibility']),
                 'Other ID': link['person_id'],
                 'Relationship Code': link['relationship_code'],
             }

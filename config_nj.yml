@@ -6,6 +6,7 @@ version: 1
 
 locality: NJ
 format: MITC
+endpoint: MITC
 
 fpl_year: 2023
 fpl_limits:
