@@ -1,7 +1,7 @@
 # MITC format is the JSON used by https://github.com/HHSIDEAlab/medicaid_eligibility
 
 class MITC:
-    def transform(usds):
+    def produce(usds):
         mitc = {'Name': 'Frontend Application'}
         # WARNING: MITC requires all households to be in the same state
         mitc['State'] = usds['test_inputs'][0]['locality']
@@ -26,16 +26,20 @@ class MITC:
             for usds_person in usds_house['persons']:
                 # WARNING: MITC has unique person IDs across households: remap?
                 mitc_house['People'].append({'Person ID': usds_person['person_id']})
-                mitc['People'].append(transform_person(usds_person))
-                
+                mitc['People'].append(produce_person(usds_person))
+
             mitc['Physical Households'].append(mitc_house)
 
         return mitc
     
+    def consume(mitc):
+        usds = mitc
+        usds
+
 def mitc_bool(tf):
     return 'Y' if tf else 'N'
 
-def transform_person(usds):
+def produce_person(usds):
     mitc = {}
     mitc['Applicant Age'] = usds['age']
     mitc['Applicant Age >= 90'] = mitc_bool(usds['age'] > 90)
@@ -48,13 +52,13 @@ def transform_person(usds):
     mitc['Has Insurance'] = mitc_bool(usds['has_insurance'])
     mitc['Hours Worked Per Week'] = usds['weekly_work_hours']
     mitc['Incarceration Status'] = mitc_bool(usds['is_incarcerated'])
-    mitc['Income'] = transform_income(usds['income_distribution'])
+    mitc['Income'] = produce_income(usds['income_distribution'])
     mitc['Is Applicant'] = mitc_bool(usds['is_applicant'])
     mitc['Lives In State'] = mitc_bool(usds['lives_in_state'])
     mitc['Medicare Entitlement Indicator'] = mitc_bool(usds['is_medicare_eligible'])
     mitc['Person ID'] = usds['person_id']
     mitc['Prior Insurance'] = mitc_bool(usds['prior_insurance'])
-    mitc['Relationships'] = transform_relations(usds['relationships'])
+    mitc['Relationships'] = produce_relations(usds['relationships'])
     mitc['Required to File Taxes'] = mitc_bool(usds['must_file_taxes'])
     mitc['State Health Benefits Through Public Employee'] = mitc_bool(usds['state_health_benefits'])
     mitc['Student Indicator'] = mitc_bool(usds['is_student'])
@@ -76,13 +80,13 @@ IMCOME_TYPES = {
     'wages_salary_tips': 'Wages, Salaries, Tips',
 }
 
-def transform_income(usds):
+def produce_income(usds):
     mitc = {}
     for source in usds:
         mitc[IMCOME_TYPES[source['type']]] = source['amount']
     return mitc
 
-def transform_relations(usds):
+def produce_relations(usds):
     mitc = []
     for link in usds:
         mitc.append(

@@ -98,21 +98,31 @@ class TestGenerator:
 			case _:
 				return dollar_amount
 
-	def generate_test(self, test_case_name, output_dir = "test_outputs", output_filename_suffix = "_instance.json"):
-		test_case_input_data = (self.parse_test_case(os.path.join("test_cases", test_case_name + ".yml")))
-		data = self.generate_test_data(test_case_input_data)
+	def generate_test(self, test_template_name):
+		test_case_template = self.parse_test_case(os.path.join(
+				"test_templates",
+				test_template_name + ".yml"))
+		data = self.generate_test_data(test_case_template)
 
-		transformer = protocols.transformers[self.format]
-		data = transformer(data)
+		producer = protocols.producers[self.format]
+		return json.dumps(producer(data))
 
-		output_filename = output_dir + "/" + test_case_name + "_" + self.locality + output_filename_suffix
+	def generate_test_file(
+			self,
+			test_template_name,
+			output_dir = "test_inputs",
+			input_filename_suffix = "_input.json"):
+		data = self.generate_test(test_template_name)
+
+		output_filename = output_dir + "/" + test_template_name + "_" + self.locality + input_filename_suffix
 		os.makedirs(os.path.dirname(output_filename), exist_ok=True)
 		with open(output_filename, "w") as output_file_data:
-			json.dump(data, output_file_data)
+			output_file_data.write(data)
 
-# for now assume only one cmd line parameter, the name of the config file
-config_filename = "config_nj.yml"
-if len(sys.argv) > 1:
-	config_filename = str(sys.argv[1])
-testGen = TestGenerator(config_filename)
-testGen.generate_test("00001")
+if __name__ == '__main__':
+	# for now assume only one cmd line parameter, the name of the config file
+	config_filename = "config_nj.yml"
+	if len(sys.argv) > 1:
+		config_filename = str(sys.argv[1])
+	testGen = TestGenerator(config_filename)
+	testGen.generate_test_file("00001")

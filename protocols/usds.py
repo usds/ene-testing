@@ -2,5 +2,7 @@
 # this transformer passes the object through unchanged
 
 class USDS:
-    def transform(data):
+    def produce(data):
+        return data
+    def consume(data):
         return data
