@@ -2,6 +2,8 @@
 
 ## Step 1: Auth
 
+First time only:
+
 1. Navigate to https://registry2.omb.gov/
    1. you'll need your PIV
    2. probably easier to do this on your laptop not the virtual box
@@ -15,11 +17,15 @@
 
 ## Step 2: build
 
-`docker build -t registry2.omb.gov:me -f me.dockerfile .`
+If the image doesn't exist, or if you have modified it:
+
+`./mitc.sh build`
+
+**TODO**: find out how/if we can share images
 
 ## Step 3: run
 
-`me_pid=$(docker run -d -p 3000:3000 -t registry2.omb.gov:me)`
+`./mitc.sh start`
 
 ## Step 4: profit!
 
@@ -27,4 +33,4 @@ Browse over to [http://127.0.0.1:3000/#/application](http://127.0.0.1:3000/#/app
 
 ## Step 5: clean up
 
-`docker kill $me_pid``
+`./mitc.sh stop`
