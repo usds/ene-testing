@@ -34,15 +34,20 @@ class TestGenerator:
 		test_data = self.open_file(test_case_file)
 		return test_data
 
-	def generate_test_data(self, test_case_data):
+	def generate_test_data(self, test_case):
 		# Requires real number conversion:
 		#   - Age -> DOB
 		#   - FPL limits -> dollars
 
-		for household_index, household in enumerate(test_case_data):
+		year = datetime.now().year
+		if "application_year" in test_case and test_case["application_year"] != "today" :
+			year = int(test_case["application_year"])
+
+		for household_index, household in enumerate(test_case["test_inputs"]):
 			persons = household["persons"]
 			household_size = len(persons)
 			household["household_size"] = household_size
+			household["application_year"] = year
 
 			year = self.config["fpl_year"]
 			fpl = self.fpl_tables[year]["base"] + (household_size - 1)*(self.fpl_tables[year]["increment"])
@@ -52,11 +57,11 @@ class TestGenerator:
 				date_of_birth = datetime.now() - relativedelta(years=person["age"])
 				person["dob"] = int(time.mktime(date_of_birth.timetuple())) # convert datetime to UNIX timestamp for now
 				for income_index, income_item in enumerate(person["income_distribution"]):
-					person["income_distribution"][income_index] = self.dollar_amount(fpl, self.config["fpl_limits"], income_item["amount"])
+					person["income_distribution"][income_index]["amount"] = self.dollar_amount(fpl, self.config["fpl_limits"], income_item["amount"])
 				persons[person_index] = person
 						
-			test_case_data[household_index] = household
-		return test_case_data
+			test_case["test_inputs"][household_index] = household
+		return test_case
 
 	def dollar_amount(self, fpl, fpl_limits, test_amount):
 		if str(test_amount).isnumeric():
@@ -89,13 +94,13 @@ class TestGenerator:
 				return dollar_amount
 
 	def generate_test(self, test_case_name, output_dir = "test_outputs", output_filename_suffix = "_instance.json"):
-		test_case_input_data = (self.parse_test_case(os.path.join("test_cases", test_case_name + ".yml")))["test_inputs"]
+		test_case_input_data = (self.parse_test_case(os.path.join("test_cases", test_case_name + ".yml")))
 		data = self.generate_test_data(test_case_input_data)
 
 		output_filename = output_dir + "/" + test_case_name + "_" + self.locality + output_filename_suffix
 		os.makedirs(os.path.dirname(output_filename), exist_ok=True)
 		with open(output_filename, "w") as output_file_data:
-			json.dump(data, output_file_data)
+			json.dump(data["test_inputs"], output_file_data)
 
 # for now assume only one cmd line parameter, the name of the config file
 config_filename = "config_nj.yml"
