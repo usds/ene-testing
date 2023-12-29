@@ -16,7 +16,9 @@ mitc_build() {
 mitc_down() {
     echo "stopping mitc test servier"
     docker stop mitc
-    echo "server has been shut down"
+    echo "removing the mitc container"
+    docker rm mitc
+    echo "mitc has been stopped"
 }
 
 mitc_up() {
@@ -37,7 +39,7 @@ mitc_up() {
             return 0
         else
             echo -n "."
-            sleep 2
+            sleep 1
         fi
     done
     echo " SERVER FAILED TO START"
