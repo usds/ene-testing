@@ -5,6 +5,7 @@
 version: 1
 
 locality: AA
+format: USDS
 
 fpl_year: 2023
 fpl_limits:

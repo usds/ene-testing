@@ -11,6 +11,13 @@ import sys
 import time
 import yaml
 
+import protocols.usds
+
+transformers = {
+	"USDS": protocols.usds.transform,
+	"MITC": protocols.usds.transform,
+}
+
 class TestGenerator:
 	config_filename = ""
 	config = {}
@@ -20,6 +27,7 @@ class TestGenerator:
 		self.config_filename = config_filename
 		self.config = self.open_file(config_filename)
 		self.locality = self.config["locality"]
+		self.format = self.config["format"]
 		fpl_table_object = self.open_file("fpl_tables.yml")
 		self.fpl_tables = fpl_table_object["fpl_tables"]
 
@@ -98,6 +106,9 @@ class TestGenerator:
 	def generate_test(self, test_case_name, output_dir = "test_outputs", output_filename_suffix = "_instance.json"):
 		test_case_input_data = (self.parse_test_case(os.path.join("test_cases", test_case_name + ".yml")))
 		data = self.generate_test_data(test_case_input_data)
+
+		transformer = transformers[self.format]
+		data = transformer(data)
 
 		output_filename = output_dir + "/" + test_case_name + "_" + self.locality + output_filename_suffix
 		os.makedirs(os.path.dirname(output_filename), exist_ok=True)
