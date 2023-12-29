@@ -48,6 +48,7 @@ class TestGenerator:
 			household_size = len(persons)
 			household["household_size"] = household_size
 			household["application_year"] = year
+			household["locality"] = self.locality
 
 			year = self.config["fpl_year"]
 			fpl = self.fpl_tables[year]["base"] + (household_size - 1)*(self.fpl_tables[year]["increment"])
@@ -61,6 +62,7 @@ class TestGenerator:
 				persons[person_index] = person
 						
 			test_case["test_inputs"][household_index] = household
+		
 		return test_case
 
 	def dollar_amount(self, fpl, fpl_limits, test_amount):
