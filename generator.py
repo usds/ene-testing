@@ -11,12 +11,7 @@ import sys
 import time
 import yaml
 
-import protocols.usds
-
-transformers = {
-	"USDS": protocols.usds.transform,
-	"MITC": protocols.usds.transform,
-}
+import protocols
 
 class TestGenerator:
 	config_filename = ""
@@ -107,13 +102,13 @@ class TestGenerator:
 		test_case_input_data = (self.parse_test_case(os.path.join("test_cases", test_case_name + ".yml")))
 		data = self.generate_test_data(test_case_input_data)
 
-		transformer = transformers[self.format]
+		transformer = protocols.transformers[self.format]
 		data = transformer(data)
 
 		output_filename = output_dir + "/" + test_case_name + "_" + self.locality + output_filename_suffix
 		os.makedirs(os.path.dirname(output_filename), exist_ok=True)
 		with open(output_filename, "w") as output_file_data:
-			json.dump(data["test_inputs"], output_file_data)
+			json.dump(data, output_file_data)
 
 # for now assume only one cmd line parameter, the name of the config file
 config_filename = "config_nj.yml"

@@ -4,7 +4,7 @@
 
 test_name: Individualized Eligibility 1
 test_description: Amcit single parent making just below child eligibility limit. Each member of the household should be tested for program eligibility individually, using the threshold that applies to the individual, regardless of the determination or status of any others in the household.
-application_year: today
+application_year: 2021
 test_inputs:
   - household_id: 1
     persons:
