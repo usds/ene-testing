@@ -14,7 +14,7 @@ import yaml
 
 import protocols
 
-class TestGenerator:
+class Generator:
 	config_filename = ""
 	config = {}
 	fpl_tables = {}
@@ -127,7 +127,7 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 
 	config_filename = args.config
-	testGen = TestGenerator(config_filename)
+	testGen = Generator(config_filename)
 	files = [os.path.join("test_templates", f) for f in os.listdir('./test_templates') if f.endswith('yml')]
 	files.sort()
 	if args.test is not None:

@@ -2,14 +2,12 @@
 
 import argparse
 import os
-import sys
-import unittest
 
 import endpoints
 import protocols
-from generator import TestGenerator
+from generator import Generator
 
-class TestExecutor:
+class Executor:
 	"""Execute a test template
 
 	- Transform template to input.
@@ -18,8 +16,7 @@ class TestExecutor:
 	"""
 
 	def __init__(self, config_filename = "localities/config_aa.yml"):
-		super(TestExecutor, self).__init__()
-		self.generator = TestGenerator(config_filename)
+		self.generator = Generator(config_filename)
 		self.locality = self.generator.locality
 		self.endpoint = self.generator.config["endpoint"]
 		self.format = self.generator.config["format"]
@@ -31,7 +28,10 @@ class TestExecutor:
 		adaptor = endpoints.adaptor[self.endpoint]
 		consumer = protocols.consumers[self.format]
 
-		return consumer(adaptor(input))
+		return {
+			'expected': expected,
+			'actual': consumer(adaptor(input)),
+		}
 
 
 if __name__ == '__main__':
@@ -43,7 +43,7 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 
 	config_filename = args.config
-	executor = TestExecutor(config_filename)
+	executor = Executor(config_filename)
 	test_path = args.test
 	template_name = os.path.basename(test_path).split('.')[0]
 	print(f'Testing {template_name} for {executor.locality}')
