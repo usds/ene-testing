@@ -19,7 +19,7 @@ class TestGenerator:
 	config = {}
 	fpl_tables = {}
 
-	def __init__(self, config_filename = "config_aa.yml"):
+	def __init__(self, config_filename = "localities/config_aa.yml"):
 		self.config_filename = config_filename
 		self.config = self.open_file(config_filename)
 		self.locality = self.config["locality"]
@@ -35,9 +35,7 @@ class TestGenerator:
 				print(exc)
 
 	def parse_test_template(self, test_template_name):
-		test_data = self.open_file(os.path.join(
-			"test_templates",
-			test_template_name + ".yml"))
+		test_data = self.open_file(test_template_name)
 		return test_data
 
 	def generate_test_data(self, test_case):
@@ -124,17 +122,17 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(
 		prog='generator.py',
 		description='Combine templates with a locality config to generate test data')
-	parser.add_argument('-c', '--config', default='config_nj.yml')
+	parser.add_argument('-c', '--config', default='localities/config_nj.yml')
 	parser.add_argument('-t', '--test', default=None)
 	args = parser.parse_args()
 
 	config_filename = args.config
 	testGen = TestGenerator(config_filename)
-	files = [f for f in os.listdir('./test_templates') if f.endswith('yml')]
+	files = [os.path.join("test_templates", f) for f in os.listdir('./test_templates') if f.endswith('yml')]
 	files.sort()
 	if args.test is not None:
 		files = [ args.test ]
-	for f in files:
-		template_name = f.split('.')[0]
+	for test_path in files:
+		template_name = os.path.basename(test_path).split('.')[0]
 		print(f'Generating {template_name} for {testGen.locality}')
-		testGen.generate_test_file(template_name)
+		testGen.generate_test_file(test_path)
