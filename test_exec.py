@@ -4,7 +4,9 @@ import unittest
 from executor import Executor
 
 localities = [os.path.join("localities", f) for f in os.listdir('./localities') if f.endswith('yml')]
+localities.sort()
 templates = [os.path.join("test_templates", f) for f in os.listdir('./test_templates') if f.endswith('yml')]
+templates.sort()
 test_cases = [(l, t) for l in localities for t in templates]
 
 class TestExecutor:
