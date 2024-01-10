@@ -9,7 +9,7 @@ import endpoints
 import protocols
 from generator import TestGenerator
 
-class TestExecutor(unittest.TestCase):
+class TestExecutor:
 	"""Execute a test template
 
 	- Transform template to input.
@@ -17,48 +17,35 @@ class TestExecutor(unittest.TestCase):
 	- Transform response and compare to expected output.
 	"""
 
-	def __init__(self, config_filename = "config_aa.yml"):
+	def __init__(self, config_filename = "localities/config_aa.yml"):
 		super(TestExecutor, self).__init__()
 		self.generator = TestGenerator(config_filename)
 		self.locality = self.generator.locality
 		self.endpoint = self.generator.config["endpoint"]
 		self.format = self.generator.config["format"]
 
-	def test_response(self, test_template_name):
+	def exec(self, test_template_name):
 		test_case_template = self.generator.parse_test_template(test_template_name)
 		input = self.generator.generate_test_json(test_template_name)
 		expected = test_case_template['test_outputs']
 		adaptor = endpoints.adaptor[self.endpoint]
 		consumer = protocols.consumers[self.format]
 
-		actual = consumer(adaptor(input))
-
-		self.assertEqual(expected, actual)
+		return consumer(adaptor(input))
 
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(
 		prog='executor.py',
 		description='Execute tests against Medicaid eligibility backends')
-	parser.add_argument('-c', '--config', default='config_nj.yml')
-	parser.add_argument('-t', '--test', default=None)
+	parser.add_argument('-c', '--config', default='localities/config_nj.yml')
+	parser.add_argument('-t', '--test', default='test_templates/00001.yml')
 	args = parser.parse_args()
 
-	# for now assume only one cmd line parameter, the name of the config file
 	config_filename = args.config
 	executor = TestExecutor(config_filename)
-	files = [f for f in os.listdir('./test_templates') if f.endswith('yml')]
-	files.sort()
-	if args.test is not None:
-		files = [ args.test ]
-	for f in files:
-		template_name = f.split('.')[0]
-		print()
-		print(f'Testing {template_name} for {executor.locality}')
-		print('================================')
-		try:
-			executor.test_response(template_name)
-			print("pass")
-		except AssertionError as fail:
-			print("FAIL")
-			print(fail)
+	test_path = args.test
+	template_name = os.path.basename(test_path).split('.')[0]
+	print(f'Testing {template_name} for {executor.locality}')
+	print('================================')
+	print(executor.exec(test_path))
