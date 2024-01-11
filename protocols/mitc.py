@@ -43,19 +43,20 @@ class MITC:
         return usds
 
 def find_reason(person):
+    reasons = []
     if 'Ineligibility Reason' in person:
-        return person['Ineligibility Reason'][0]
+        reasons.append(person['Ineligibility Reason'][0])
     if mitc2bool(person['CHIP Eligible']) and 'CHIP Category' in person:
-        return person['CHIP Category']
+        reasons.append(person['CHIP Category'])
     eligiblity = is_eligibile(person)
     for key, value in person['Determinations'].items():
         indication = mitc2bool(value['Indicator'])
-        if indication != eligiblity:
-            continue
-        if 'Ineligibility Reason' in value:
-            return value['Ineligibility Reason']
-        return key
-    return ''
+        if indication == eligiblity:
+            if 'Ineligibility Reason' in value:
+                reasons.append(value['Ineligibility Reason'])
+            else:
+                reasons.append(key)
+    return ','.join(reasons)
 
 def is_eligibile(person):
     return (

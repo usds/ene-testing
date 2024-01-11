@@ -14,7 +14,7 @@ mitc_build() {
 }
 
 mitc_down() {
-    echo "stopping mitc test servier"
+    echo "stopping mitc test server"
     docker stop mitc
     echo "removing the mitc container"
     docker rm mitc
@@ -22,7 +22,7 @@ mitc_down() {
 }
 
 mitc_up() {
-    echo "starting mitc test servier"
+    echo "starting mitc test server"
     cd $DOCKER_ROOT
     docker run --detach --name mitc --publish 3000:3000 registry2.omb.gov:mitc
     if [ $? != 0 ]
