@@ -17,7 +17,8 @@ class TestExecutor:
         executor = Executor(locality)
         artifacts = executor.exec(template)
 
-        assert len(artifacts['expected']) == len(artifacts['actual']), "applicants missing or inserted"
+        assert len(artifacts['expected']) <= len(artifacts['actual']), "response contains too many people"
+        assert len(artifacts['expected']) >= len(artifacts['actual']), "response contains too few people"
         expected = {}
         for expectation in artifacts['expected']:
             expected[expectation['person_id']] = expectation
