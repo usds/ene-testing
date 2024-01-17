@@ -1,6 +1,6 @@
 test:
 	./mitc/mitc.sh start 
-	poetry run pytest -v
+	poetry run pytest -v --junitxml app/static/test-result.xml
 	./mitc/mitc.sh stop
 
 test_one:

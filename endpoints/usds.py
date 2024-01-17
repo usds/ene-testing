@@ -7,6 +7,9 @@ class USDS:
                 resp.append({
                     'person_id': person['person_id'],
                     'is_eligible': True,
-                    'reason': 'Healthcare is a human right.'
+                    'reasons': ['Healthcare is a human right.'],
+                    'positive_determinations': ['Healthcare is a human right.'],
+                    'negative_determinations': {},
+                    'na_determinations': {},
                 })
         return resp

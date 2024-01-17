@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="0.384" timestamp="2024-01-17T16:44:13.901330" hostname="wpc-linux-03"><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_aa.yml-test_templates/00001.yml]" time="0.032"><failure message="AssertionError: Healthcare is a human right.&#10;assert False == True">self = &lt;test_exec.TestExecutor object at 0x7f01debdbe50&gt;, locality = 'localities/config_aa.yml', template = 'test_templates/00001.yml'
+
+    @pytest.mark.parametrize("locality,template", test_cases)
+    def test_response(self, locality, template):
+        print (os.environ["PYTEST_CURRENT_TEST"])
+        executor = Executor(locality)
+        artifacts = executor.exec(template)
+    
+        assert len(artifacts['expected']) &lt;= len(artifacts['actual']), "response contains too many people"
+        assert len(artifacts['expected']) &gt;= len(artifacts['actual']), "response contains too few people"
+        expected = {}
+        for expectation in artifacts['expected']:
+            expected[expectation['person_id']] = expectation
+        for result in artifacts['actual']:
+&gt;           assert expected[result['person_id']]['is_eligible'] == result['is_eligible'], result['reason']
+E           AssertionError: Healthcare is a human right.
+E           assert False == True
+
+test_exec.py:26: AssertionError</failure></testcase><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_aa.yml-test_templates/00002.yml]" time="0.029" /><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_nj.yml-test_templates/00001.yml]" time="0.040" /><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_nj.yml-test_templates/00002.yml]" time="0.038" /></testsuite></testsuites>

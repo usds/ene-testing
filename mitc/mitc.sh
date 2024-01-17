@@ -35,7 +35,7 @@ mitc_up() {
     do
         if mitc_is_up;
         then
-            echo "server is ready"
+            echo "server is ready and listening on http://127.0.0.1:3000"
             return 0
         else
             echo -n "."
