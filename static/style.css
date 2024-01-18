@@ -500,6 +500,7 @@ button.checker input {
   background-color: rgb(242, 222, 222);
   border-color: rgb(238, 211, 215);
   color: black;
+  font-weight: 800;
   background: repeating-linear-gradient(
     45deg,
     #FF7F7F,
