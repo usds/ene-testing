@@ -401,7 +401,7 @@ button.checker{
   width: 23px;
   height: 24px;
   padding-top: 1px;
-  background-color: ;
+  background-color: white;
 }
 
 button.checker input {
@@ -423,7 +423,7 @@ button.checker input {
 }
 
 .cf {
-    *zoom: 1;
+    zoom: 1;
 }
 
 .determinations table td {
