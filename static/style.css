@@ -482,16 +482,23 @@ button.checker input {
   margin-right: 3px;
 }
 
-.eligibility.eligible {
+.correct {
   background-color: rgb(223, 240, 216);
   border-color: rgb(214, 233, 198);
-  color: rgb(70, 136, 71);
+  color: rgb(0, 136, 71);
 }
 
-.eligibility.ineligible {
+.error {
   background-color: rgb(242, 222, 222);
   border-color: rgb(238, 211, 215);
-  color: rgb(185, 74, 72);
+  color: black;
+  background: repeating-linear-gradient(
+    45deg,
+    #FF7F7F,
+    #FF7F7F 2px,
+    white 2px,
+    white 8px
+  );
 }
 
 .eligibility {

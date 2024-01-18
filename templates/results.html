@@ -1,16 +1,14 @@
 {% include 'header.html' %}
-{% for applicant in applicants %}
+{% for applicant in actual %}
 <div class="person">
   <div class="head">
     <h3>Person {{ applicant["person_id"] }}</h3>
     <br>
     <div class="eligibility-div">
-      {% if applicant['is_eligible'] %}
-        <span class="eligibility">Medicaid: Yes</span>
-      {% else %}
-        <span class="eligibility">Medicaid: No</span>
-      {% endif %}
-      {% if applicant['category'] != 'None' %}
+      <span class="eligibility {{ 'error' if expected[applicant['person_id']] != applicant['is_eligible'] else 'correct' }}">
+        Medicaid: {{ 'Yes' if applicant['is_eligible'] else 'No' }}
+      </span>
+      {% if applicant['is_eligible'] != 'None' %}
         <span class="threshold">Eligibility Threshold: {{ applicant["category_threshold"] }}</span>
         <span class="category">{{applicant["category"]}}</span>
       {% else %}
@@ -28,12 +26,10 @@
     </div>
     {% if not applicant['medicaid_eligible'] %}
       <div class="eligibility-div">
+          <span class="eligibility {{ 'error' if expected[applicant['person_id']] != applicant['is_eligible'] else 'correct' }}">
+            CHIP: {{ 'Yes' if applicant['chip_eligible'] else 'No' }}
+        </span>
         {% if applicant['chip_eligible'] %}
-          <span class="eligibility">CHIP: Yes</span>
-        {% else %}
-          <span class="eligibility">CHIP: No</span>
-        {% endif %}
-        {% if applicant['chip_category'] != 'None' %}
           <span class="threshold">Eligibility Threshold: {{ applicant["chip_category_threshold"] }}</span>  
           <span class="category">{{applicant["chip_category"]}}</span>
         {% else %}  
