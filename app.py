@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import json
 from executor import Executor
-
+from junit import JUnitResults
 import protocols
 
 app = Flask(__name__)
@@ -21,14 +21,22 @@ def test():
     expected = {}
     for applicant in artifacts["expected"]:
          expected[applicant['person_id']] = applicant['is_eligible']
-    return render_template('results.html',
+    return render_template('details.html',
                             actual = actual,
                             expected = expected)
 
 @app.route('/', methods=['GET'])
 def root():
-        return render_template('test_results.html',
-                               applicants = result["Applicants"])
+        junit = JUnitResults('static/test_results.xml')
+        results_by_locality = {}
+        localities = [ result['locality'] for result in junit.results]
+        localities = list(set(localities))
+        for locality in localities:
+             results_by_locality[locality] = []
+        for result in junit.results:
+             results_by_locality[result['locality']].append(result)
+        return render_template('results.html',
+                               localities = results_by_locality)
 
 if __name__=='__main__':
     app.run()
