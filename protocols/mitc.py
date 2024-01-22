@@ -29,34 +29,48 @@ class MITC:
                 mitc['People'].append(produce_person(usds_person))
 
             mitc['Physical Households'].append(mitc_house)
-
         return mitc
         
     def consume(mitc):
         usds = []
         for person in mitc['Applicants']:
-            usds.append({
+            p = {
                 'person_id': person['Person ID'],
+                'household': {
+                    'size': len(person['Medicaid Household']['People']),
+                    'magi': person['Medicaid Household']["MAGI"],
+                    'pfpl': person['Medicaid Household']["MAGI as Percentage of FPL"],
+                },
                 'is_eligible': is_eligibile(person),
-                'reason': find_reason(person),
-            })
-        return usds
-
-def find_reason(person):
-    reasons = []
-    if 'Ineligibility Reason' in person:
-        reasons.append(person['Ineligibility Reason'][0])
-    if mitc2bool(person['CHIP Eligible']) and 'CHIP Category' in person:
-        reasons.append(person['CHIP Category'])
-    eligiblity = is_eligibile(person)
-    for key, value in person['Determinations'].items():
-        indication = mitc2bool(value['Indicator'])
-        if indication == eligiblity:
-            if 'Ineligibility Reason' in value:
-                reasons.append(value['Ineligibility Reason'])
+                'category': person["Category"],
+                'category_threshold': person["Category Threshold"],
+                'medicaid_eligible': mitc2bool(person["Medicaid Eligible"]),
+                'ineligibility_reasons': person["Ineligibility Reason"]
+                    if "Ineligibility Reason" in person else None,
+                'chip_eligible': mitc2bool(person["CHIP Eligible"]),
+                'chip_category': person["CHIP Category"],
+                'chip_category_threshold': person["CHIP Category Threshold"],
+                'chip_ineligibility_reasons': person["CHIP Ineligibility Reason"] 
+                    if "CHIP Ineligibility Reason" in person else None,
+                'positive_determinations': [
+                    name for (name, d) in person["Determinations"].items()
+                    if d["Indicator"] == 'Y'
+                ],
+                'negative_determinations': {
+                    name: d["Ineligibility Reason"] for (name, d) in person["Determinations"].items()
+                    if d["Indicator"] == 'N'
+                },
+                'na_determinations': [
+                    name for (name, d) in person["Determinations"].items()
+                    if d["Indicator"] == 'X'
+                ],
+            }
+            if p['is_eligible']:
+                p['reasons'] = p['positive_determinations']
             else:
-                reasons.append(key)
-    return ','.join(reasons)
+                p['reasons'] = p['negative_determinations'].keys()
+            usds.append(p)
+        return usds
 
 def is_eligibile(person):
     return (

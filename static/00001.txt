@@ -1,0 +1,174 @@
+---
+# Ideally this file would conform to a YAML schema
+# We currently don't have a way to make the income variables formal enumerations
+
+test_name: Individualized Eligibility 1
+test_description: Amcit single parent making just below child eligibility limit. Each member of the household should be tested for program eligibility individually, using the threshold that applies to the individual, regardless of the determination or status of any others in the household.
+application_year: 2021
+test_inputs:
+  - household_id: 1
+    persons:
+    - person_id: 1
+      is_applicant: true
+      age: 45
+      has_abd_status: false
+      is_student: false
+      is_medicare_eligible: false
+      is_incarcerated: false
+      lives_in_state: true
+      claimed_dependent: false # only available if 19 or below
+      long_term_care: false
+      has_insurance: false
+      state_health_benefits: false
+      prior_insurance: false
+      is_pregnant: false
+      is_post_partum: false
+      former_foster_care: false
+      must_file_taxes: false
+      is_citizen: true
+      weekly_work_hours: 0
+      income_distribution:
+        - type: monthly_income
+          amount: 0
+        - type: wages_salary_tips
+          amount: child_limit-
+        - type: taxable_interest
+          amount: 0
+        - type: tax_exempt_interest
+          amount: 0
+        - type: tax_refunds_credits_offsets
+          amount: 0
+        - type: alimony
+          amount: 0
+        - type: capital_gain_or_loss
+          amount: 0
+        - type: pensions_annuities
+          amount: 0
+        - type: farm_income_or_loss
+          amount: 0
+        - type: unemployment_compensation
+          amount: 0
+        - type: other_income
+          amount: 0
+        - type: magi_deductions
+          amount: 0
+      relationships:
+        - person_id: 2
+          relationship_code: 3 # parent
+          attests_responsibility: false
+        - person_id: 3
+          relationship_code: 3 # parent
+          attests_responsibility: false
+    - person_id: 2
+      is_applicant: true
+      age: 9
+      has_abd_status: false
+      is_student: false
+      is_medicare_eligible: false
+      is_incarcerated: false
+      lives_in_state: true
+      claimed_dependent: false
+      long_term_care: false
+      has_insurance: false
+      state_health_benefits: false
+      prior_insurance: false
+      is_pregnant: false
+      is_post_partum: false
+      former_foster_care: false
+      must_file_taxes: false
+      is_citizen: true
+      weekly_work_hours: 0
+      income_distribution:
+        - type: monthly_income
+          amount: 0
+        - type: wages_salary_tips
+          amount: 0
+        - type: taxable_interest
+          amount: 0
+        - type: tax_exempt_interest
+          amount: 0
+        - type: tax_refunds_credits_offsets
+          amount: 0
+        - type: alimony
+          amount: 0
+        - type: capital_gain_or_loss
+          amount: 0
+        - type: pensions_annuities
+          amount: 0
+        - type: farm_income_or_loss
+          amount: 0
+        - type: unemployment_compensation
+          amount: 0
+        - type: other_income
+          amount: 0
+        - type: magi_deductions
+          amount: 0
+      relationships:
+        - person_id: 1
+          relationship_code: 4 # child
+          attests_responsibility: false
+        - person_id: 3
+          relationship_code: 7 # sibling
+          attests_responsibility: false
+    - person_id: 3
+      is_applicant: true
+      age: 7
+      has_abd_status: false
+      is_student: false
+      is_medicare_eligible: false
+      is_incarcerated: false
+      lives_in_state: true
+      claimed_dependent: false
+      long_term_care: false
+      has_insurance: false
+      state_health_benefits: false
+      prior_insurance: false
+      is_pregnant: false
+      is_post_partum: false
+      former_foster_care: false
+      must_file_taxes: false
+      is_citizen: true
+      weekly_work_hours: 0
+      income_distribution:
+        - type: monthly_income
+          amount: 0
+        - type: wages_salary_tips
+          amount: 0
+        - type: taxable_interest
+          amount: 0
+        - type: tax_exempt_interest
+          amount: 0
+        - type: tax_refunds_credits_offsets
+          amount: 0
+        - type: alimony
+          amount: 0
+        - type: capital_gain_or_loss
+          amount: 0
+        - type: pensions_annuities
+          amount: 0
+        - type: farm_income_or_loss
+          amount: 0
+        - type: unemployment_compensation
+          amount: 0
+        - type: other_income
+          amount: 0
+        - type: magi_deductions
+          amount: 0
+      relationships:
+        - person_id: 1
+          relationship_code: 4 # child
+          attests_responsibility: false
+        - person_id: 2
+          relationship_code: 7 # sibling
+          attests_responsibility: false
+test_outputs:
+  - person_id: 1
+    is_eligible: false
+    reason: 
+  - person_id: 2
+    is_eligible: true
+    reason: 
+  - person_id: 3
+    is_eligible: true
+    reason: 
+

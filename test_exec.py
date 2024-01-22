@@ -23,4 +23,4 @@ class TestExecutor:
         for expectation in artifacts['expected']:
             expected[expectation['person_id']] = expectation
         for result in artifacts['actual']:
-            assert expected[result['person_id']]['is_eligible'] == result['is_eligible'], result['reason']
+            assert expected[result['person_id']]['is_eligible'] == result['is_eligible'], result['reasons']

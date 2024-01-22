@@ -1,0 +1,21 @@
+{% include 'header.html' %}
+{% for locality, results in localities|items|sort %}
+<div class="test">
+  <div class="head">
+    <h3>Locality:{{ locality }}</h3>
+    <a href="static/config_{{locality.lower()}}.txt">locality config</a>
+    <ul>
+        {% for test in results %}
+            <li>Test:{{ test["test"] }}
+                <span class="result {{ 'correct' if test['passed'] else 'error' }}">
+                    {{ 'Passed' if test['passed'] else 'FAILED' }}
+                </span> |
+                <a href="/test?locality={{test['locality']}}&test={{test['test']}}"> test details </a> |
+                <a href="/static/{{test['test']}}.txt"> test config </a>
+            </li>
+        {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endfor %}
+{% include 'footer.html' %}
