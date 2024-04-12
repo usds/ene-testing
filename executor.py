@@ -23,7 +23,7 @@ class Executor:
 
 	def exec(self, test_template_name):
 		test_case_template = self.generator.parse_test_template(test_template_name)
-		input = self.generator.generate_test_json(test_template_name)
+		input = self.generator.generate_test_json(test_case_template)
 		expected = test_case_template['test_outputs']
 		adaptor = endpoints.adaptor[self.endpoint]
 		consumer = protocols.consumers[self.format]

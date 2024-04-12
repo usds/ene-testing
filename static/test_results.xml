@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="0.384" timestamp="2024-01-17T16:44:13.901330" hostname="wpc-linux-03"><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_aa.yml-test_templates/00001.yml]" time="0.032"><failure message="AssertionError: Healthcare is a human right.&#10;assert False == True">self = &lt;test_exec.TestExecutor object at 0x7f01debdbe50&gt;, locality = 'localities/config_aa.yml', template = 'test_templates/00001.yml'
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="0.267" timestamp="2024-04-12T17:09:58.107620" hostname="wpc-linux-03"><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_aa.yml-test_templates/00001.yml]" time="0.018"><failure message="AssertionError: ['Healthcare is a human right.']&#10;assert False == True">self = &lt;test_exec.TestExecutor object at 0x764b9f3f4730&gt;, locality = 'localities/config_aa.yml'
+template = 'test_templates/00001.yml'
 
     @pytest.mark.parametrize("locality,template", test_cases)
     def test_response(self, locality, template):
@@ -12,8 +13,8 @@
         for expectation in artifacts['expected']:
             expected[expectation['person_id']] = expectation
         for result in artifacts['actual']:
-&gt;           assert expected[result['person_id']]['is_eligible'] == result['is_eligible'], result['reason']
-E           AssertionError: Healthcare is a human right.
+&gt;           assert expected[result['person_id']]['is_eligible'] == result['is_eligible'], result['reasons']
+E           AssertionError: ['Healthcare is a human right.']
 E           assert False == True
 
-test_exec.py:26: AssertionError</failure></testcase><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_aa.yml-test_templates/00002.yml]" time="0.029" /><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_nj.yml-test_templates/00001.yml]" time="0.040" /><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_nj.yml-test_templates/00002.yml]" time="0.038" /></testsuite></testsuites>
+test_exec.py:26: AssertionError</failure></testcase><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_aa.yml-test_templates/00002.yml]" time="0.018" /><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_nj.yml-test_templates/00001.yml]" time="0.031" /><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_nj.yml-test_templates/00002.yml]" time="0.027" /></testsuite></testsuites>

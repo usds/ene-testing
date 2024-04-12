@@ -99,8 +99,7 @@ class Generator:
 			case _:
 				return dollar_amount
 
-	def generate_test_json(self, test_template_name):
-		test_case_template = self.parse_test_template(test_template_name)
+	def generate_test_json(self, test_case_template):
 		data = self.generate_test_data(test_case_template)
 
 		producer = protocols.producers[self.format]
@@ -111,7 +110,8 @@ class Generator:
 			test_template_name,
 			output_dir = "test_inputs",
 			input_filename_suffix = "_input.json"):
-		data = self.generate_test_json(test_template_name)
+		test_template = self.parse_test_template(test_template_name)
+		data = self.generate_test_json(test_template)
 
 		output_filename = output_dir + "/" + test_template_name + "_" + self.locality + input_filename_suffix
 		os.makedirs(os.path.dirname(output_filename), exist_ok=True)
