@@ -17,7 +17,7 @@ A mother and child are each enrolled in Medicaid on the basis of MAGI, as a hous
 
 ### Scenario 2
 
-A father and child are each enrolled in Medicaid on the basis of MAGI, as a household of two, with a MAGI income is 145% of the FPL. The state’s MAGI Medicaid threshold for adults is 133% of the FPL and 200% for children. The state’s separate CHIP eligibility threshold is 250% of the FPL.
+A possibly immigrant) father and child are each enrolled in Medicaid on the basis of MAGI, as a household of two, with a MAGI income is 100% of the FPL. The state’s MAGI Medicaid threshold for adults is 133% of the FPL and 200% for children. The state’s separate CHIP eligibility threshold is 250% of the FPL.
 
 #### Expected outcome:
 - Child renewed automatically
