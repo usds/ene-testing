@@ -1,0 +1,110 @@
+---
+test_name: August 2023 Manatt Mom and Child
+test_description: Scenario 1 from the August 2023 Manatt guidance.
+application_year: 2021
+test_inputs:
+  - household_id: 1
+    persons:
+    - person_id: 1
+      is_applicant: true
+      age: FUZZ(14,94,20)
+      has_abd_status: FUZZ
+      is_student: FUZZ
+      is_medicare_eligible: FUZZ
+      is_incarcerated: FUZZ
+      lives_in_state: FUZZ
+      claimed_dependent: FUZZ
+      long_term_care: FUZZ
+      has_insurance: FUZZ
+      state_health_benefits: FUZZ
+      prior_insurance: FUZZ
+      is_pregnant: FUZZ
+      is_post_partum: FUZZ
+      former_foster_care: FUZZ
+      must_file_taxes: FUZZ
+      is_citizen: FUZZ
+      weekly_work_hours: FUZZ(0,80,10)
+      income_distribution:
+        - type: monthly_income
+          amount: 0
+        - type: wages_salary_tips
+          amount: PRE-POST(adult_limit-,child_limit-)
+        - type: taxable_interest
+          amount: 0
+        - type: tax_exempt_interest
+          amount: 0
+        - type: tax_refunds_credits_offsets
+          amount: 0
+        - type: alimony
+          amount: 0
+        - type: capital_gain_or_loss
+          amount: 0
+        - type: pensions_annuities
+          amount: 0
+        - type: farm_income_or_loss
+          amount: 0
+        - type: unemployment_compensation
+          amount: 0
+        - type: other_income
+          amount: 0
+        - type: magi_deductions
+          amount: 0
+      relationships:
+        - person_id: 2
+          relationship_code: 3 # parent
+          attests_responsibility: FUZZ
+    - person_id: 2
+      is_applicant: true
+      age: 10
+      has_abd_status: FUZZ
+      is_student: FUZZ
+      is_medicare_eligible: FUZZ
+      is_incarcerated: FUZZ
+      lives_in_state: FUZZ
+      claimed_dependent: FUZZ
+      long_term_care: FUZZ
+      has_insurance: FUZZ
+      state_health_benefits: FUZZ
+      prior_insurance: FUZZ
+      is_pregnant: FUZZ
+      is_post_partum: false
+      former_foster_care: FUZZ
+      must_file_taxes: false
+      is_citizen: FUZZ
+      weekly_work_hours: 0
+      income_distribution:
+        - type: monthly_income
+          amount: 0
+        - type: wages_salary_tips
+          amount: 0
+        - type: taxable_interest
+          amount: 0
+        - type: tax_exempt_interest
+          amount: 0
+        - type: tax_refunds_credits_offsets
+          amount: 0
+        - type: alimony
+          amount: 0
+        - type: capital_gain_or_loss
+          amount: 0
+        - type: pensions_annuities
+          amount: 0
+        - type: farm_income_or_loss
+          amount: 0
+        - type: unemployment_compensation
+          amount: 0
+        - type: other_income
+          amount: 0
+        - type: magi_deductions
+          amount: 0
+      relationships:
+        - person_id: 1
+          relationship_code: 4 # child
+          attests_responsibility: false
+test_outputs:
+  - person_id: 1
+    is_eligible: false
+    reason: 
+  - person_id: 2
+    is_eligible: true
+    reason: 
