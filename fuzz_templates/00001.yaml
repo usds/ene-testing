@@ -7,7 +7,7 @@ test_inputs:
     persons:
     - person_id: 1
       is_applicant: true
-      age: FUZZ(14,94,20)
+      age: FUZZ(45,95,50)
       has_abd_status: FUZZ
       is_student: FUZZ
       is_medicare_eligible: FUZZ
@@ -23,7 +23,7 @@ test_inputs:
       former_foster_care: FUZZ
       must_file_taxes: FUZZ
       is_citizen: true
-      weekly_work_hours: FUZZ(0,80,10)
+      weekly_work_hours: FUZZ(0,60,20)
       income_distribution:
         - type: monthly_income
           amount: 0
