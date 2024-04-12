@@ -22,7 +22,7 @@ test_inputs:
       is_post_partum: FUZZ
       former_foster_care: FUZZ
       must_file_taxes: FUZZ
-      is_citizen: FUZZ
+      is_citizen: true
       weekly_work_hours: FUZZ(0,80,10)
       income_distribution:
         - type: monthly_income
@@ -70,7 +70,7 @@ test_inputs:
       is_post_partum: false
       former_foster_care: FUZZ
       must_file_taxes: false
-      is_citizen: FUZZ
+      is_citizen: true
       weekly_work_hours: 0
       income_distribution:
         - type: monthly_income
