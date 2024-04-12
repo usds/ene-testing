@@ -28,8 +28,8 @@ A possibly immigrant) father and child are each enrolled in Medicaid on the basi
 The MAGI-in-the-Cloud code doesn't explicitly support renewal determinations. Both scenarios say that the cases were approved "on the basis of MAGI" but does that mean that they coudln't also have other reasons to be approved?
 1. determine all the ways the household could have been approved by fuzzing all the non-specified fields
    1. state: honestly don't know if this will make a difference outside MAGI threshold: let's find out!
-   2. age: people are children up to 19, you can certainly have a child younger than 19
-   3. weekly work hours, increments of 10 from 0 to 80
+   2. age: both scenarios indicate that the parent is an adult
+   3. weekly work hours, increments of 20 from 0 to 60
    4. booleans:
       1. student
       2. pulbic employee
@@ -44,6 +44,7 @@ The MAGI-in-the-Cloud code doesn't explicitly support renewal determinations. Bo
       11. "Claimed as Dependent by Person Not on Application" is this the opoposite of "Attest Primary Responsibility"?
       13. ABD: but maybe this breaks the "on the basis of MAGI" thing
       14. long term care: same as above?
+   5. this is a lot of possibilities, find a way to prune 
 2. given the cases that pass for "on the basis of MAGI" then set the MAGI to the level in the scenario and re-test
    1. include only cases that do not have other eligibility reasons?
    2. include all cases that at least have income as an eligibility reason?
