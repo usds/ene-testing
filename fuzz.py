@@ -15,8 +15,16 @@ class Fuzz:
 	- repeat for every ambiguity in the template
 	"""
 
-	def __init__(self, config_filename = "localities/config_nj.yml"):
+	def __init__(
+			self,
+			config_filename = "localities/config_nj.yml",
+			test_path = 'fuzz_templates/00001.yml'):
 		self.executor = Executor(config_filename)
+		self.template = self.parse_template(test_path)
+
+	def parse_template(self, test_path):
+		test_case_template = self.executor.generator.parse_test_template(test_path)
+
 		
 	def fuzz(self, template):
 		pass
@@ -47,5 +55,6 @@ if __name__ == '__main__':
 		print(f'Generating {template_name} for {fuzz.executor.locality}')
 		test_case_template = fuzz.executor.generator.parse_test_template(test_path)
 		pp.pprint(test_case_template)
+		breakpoint()
 		fuzz.fuzz(test_case_template)
 		print(test_case_template['test_inputs'][0]['persons'][0]['is_medicare_eligible'])

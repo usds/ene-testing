@@ -7,28 +7,28 @@ test_inputs:
     persons:
     - person_id: 1
       is_applicant: true
-      age: RANGE(45, 95, 50)
-      has_abd_status: CHOICE(true, false)
-      is_student: CHOICE(true, false)
-      is_medicare_eligible: CHOICE(true, false)
-      is_incarcerated: CHOICE(true, false)
-      lives_in_state: CHOICE(true, false)
-      claimed_dependent: CHOICE(true, false)
-      long_term_care: CHOICE(true, false)
-      has_insurance: CHOICE(true, false)
-      state_health_benefits: CHOICE(true, false)
-      prior_insurance: CHOICE(true, false)
-      is_pregnant: CHOICE(true, false)
-      is_post_partum: CHOICE(true, false)
-      former_foster_care: CHOICE(true, false)
-      must_file_taxes: CHOICE(true, false)
+      age: { 'fuzz': [45, 95] }
+      has_abd_status: { 'fuzz': [true, false] }
+      is_student: { 'fuzz': [true, false] }
+      is_medicare_eligible: { 'fuzz': [true, false] }
+      is_incarcerated: { 'fuzz': [true, false] }
+      lives_in_state: { 'fuzz': [true, false] }
+      claimed_dependent: { 'fuzz': [true, false] }
+      long_term_care: { 'fuzz': [true, false] }
+      has_insurance: { 'fuzz': [true, false] }
+      state_health_benefits: { 'fuzz': [true, false] }
+      prior_insurance: { 'fuzz': [true, false] }
+      is_pregnant: { 'fuzz': [true, false] }
+      is_post_partum: { 'fuzz': [true, false] }
+      former_foster_care: { 'fuzz': [true, false] }
+      must_file_taxes: { 'fuzz': [true, false] }
       is_citizen: true
-      weekly_work_hours: RANGE(0, 60, 20)
+      weekly_work_hours: { 'fuzz': [0, 20, 40, 60] }
       income_distribution:
         - type: monthly_income
           amount: 0
         - type: wages_salary_tips
-          amount: PRE-POST(adult_limit-, child_limit-)
+          amount: { 'fuzz-pre-post': [ adult_limit-, child_limit- ] }
         - type: taxable_interest
           amount: 0
         - type: tax_exempt_interest
@@ -52,23 +52,23 @@ test_inputs:
       relationships:
         - person_id: 2
           relationship_code: 3 # parent
-          attests_responsibility: CHOICE(true, false)
+          attests_responsibility: { 'fuzz': [true, false] }
     - person_id: 2
       is_applicant: true
       age: 10
-      has_abd_status: CHOICE(true, false)
-      is_student: CHOICE(true, false)
-      is_medicare_eligible: CHOICE(true, false)
-      is_incarcerated: CHOICE(true, false)
-      lives_in_state: CHOICE(true, false)
-      claimed_dependent: CHOICE(true, false)
-      long_term_care: CHOICE(true, false)
-      has_insurance: CHOICE(true, false)
-      state_health_benefits: CHOICE(true, false)
-      prior_insurance: CHOICE(true, false)
-      is_pregnant: CHOICE(true, false)
+      has_abd_status: { 'fuzz': [true, false] }
+      is_student: { 'fuzz': [true, false] }
+      is_medicare_eligible: { 'fuzz': [true, false] }
+      is_incarcerated: { 'fuzz': [true, false] }
+      lives_in_state: { 'fuzz': [true, false] }
+      claimed_dependent: { 'fuzz': [true, false] }
+      long_term_care: { 'fuzz': [true, false] }
+      has_insurance: { 'fuzz': [true, false] }
+      state_health_benefits: { 'fuzz': [true, false] }
+      prior_insurance: { 'fuzz': [true, false] }
+      is_pregnant: { 'fuzz': [true, false] }
       is_post_partum: false
-      former_foster_care: CHOICE(true, false)
+      former_foster_care: { 'fuzz': [true, false] }
       must_file_taxes: false
       is_citizen: true
       weekly_work_hours: 0
