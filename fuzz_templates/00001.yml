@@ -17,7 +17,7 @@ test_inputs:
       long_term_care: { 'fuzz': [true, false] }
       has_insurance: { 'fuzz': [true, false] }
       state_health_benefits: { 'fuzz': [true, false] }
-      prior_insurance: { 'fuzz': [true, false] }
+      prior_insurance: false
       is_pregnant: { 'fuzz': [true, false] }
       is_post_partum: { 'fuzz': [true, false] }
       former_foster_care: { 'fuzz': [true, false] }
@@ -28,7 +28,7 @@ test_inputs:
         - type: monthly_income
           amount: 0
         - type: wages_salary_tips
-          amount: { 'fuzz-pre-post': [ adult_limit-, child_limit- ] }
+          amount: { 'fuzz-condition': [ adult_limit-, child_limit- ] }
         - type: taxable_interest
           amount: 0
         - type: tax_exempt_interest

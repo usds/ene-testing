@@ -33,6 +33,7 @@ class MITC:
         
     def consume(mitc):
         usds = []
+        breakpoint()
         for person in mitc['Applicants']:
             p = {
                 'person_id': person['Person ID'],

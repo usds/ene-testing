@@ -28,7 +28,7 @@ test_inputs:
         - type: monthly_income
           amount: 0
         - type: wages_salary_tips
-          amount: { 'fuzz-pre-post': [ adult_limit-, child_limit- ] }
+          amount: { 'fuzz-condition': [ adult_limit-, child_limit- ] }
         - type: taxable_interest
           amount: 0
         - type: tax_exempt_interest

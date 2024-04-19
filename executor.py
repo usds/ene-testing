@@ -21,16 +21,20 @@ class Executor:
 		self.endpoint = self.generator.config["endpoint"]
 		self.format = self.generator.config["format"]
 
-	def exec(self, test_template_name):
-		test_case_template = self.generator.parse_test_template(test_template_name)
-		input = self.generator.generate_test_json(test_case_template)
-		expected = test_case_template['test_outputs']
+	def load(self, test_template_name):
+		self.template = self.generator.parse_test_template(test_template_name)
+		self.input = self.generator.generate_test_json(self.template)
+
+	def exec(self, test_template_name=None):
+		if test_template_name is not None:
+			self.load(test_template_name)
+		expected = self.template['test_outputs']
 		adaptor = endpoints.adaptor[self.endpoint]
 		consumer = protocols.consumers[self.format]
 
 		return {
 			'expected': expected,
-			'actual': consumer(adaptor(input)),
+			'actual': consumer(adaptor(self.input)),
 		}
 
 

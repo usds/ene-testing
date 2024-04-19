@@ -1,6 +1,7 @@
 import argparse
 import math
 import os
+import pprint
 import random
 
 import endpoints
@@ -22,18 +23,17 @@ class Fuzz:
 		self.executor = Executor(config_filename)
 
 	class Lint:
-		def __init__(self, base, host, key):
+		def __init__(self, base, host, key, options):
 			self.base = base
 			self.host = host
 			self.key = key
-			self.options = host[key]['fuzz']
+			self.options = options
 			self.cardinality = len(self.options)
 			self.bits = math.ceil(math.log2(self.cardinality))
 			self.mask = int(math.pow(2, self.bits)) - 1
 
 		def select(self, i):
 			if i > self.cardinality:
-				breakpoint()
 				return False
 			self.host[self.key] = self.options[i]
 			return True
@@ -45,13 +45,21 @@ class Fuzz:
 	def isfuzz(obj):
 		return isinstance(obj, dict) and len(obj.keys()) == 1 and 'fuzz' in obj
 
+	def isCondition(obj):
+		return isinstance(obj, dict) and len(obj.keys()) == 1 and 'fuzz-condition' in obj
+
 	def compile(self, obj, host=None, key=None):
 		if Fuzz.isfuzz(obj):
 			if host is None:
 				raise ValueError("can't fuzz a root")
-			lint = self.Lint(self.bits, host, key)
+			lint = self.Lint(self.bits, host, key, obj['fuzz'])
 			self.bits += lint.bits
 			self.lints.append(lint)
+		if Fuzz.isCondition(obj):
+			if host is None:
+				raise ValueError("can't fuzz a root")
+			lint = self.Lint(self.bits, host, key, obj['fuzz-condition'])
+			self.conditions.append(lint)
 		elif isinstance(obj, dict):
 			for k in obj.keys():
 				self.compile(obj[k], obj, k)
@@ -64,15 +72,24 @@ class Fuzz:
 
 	def load(self, test_path):
 		self.lints = []
+		self.conditions = []
 		self.bits = 0
 		self.cardinality = 1
-		self.template = self.executor.generator.parse_test_template(test_path)
-		self.compile(self.template)
+		self.executor.template = self.executor.generator.parse_test_template(test_path)
+		self.compile(self.executor.template)
 		for lint in self.lints:
-			lint.select(0)
 			self.cardinality *= lint.cardinality
-		
-	def select(self, index):
+		self.setInstance(0)
+		self.setCondition(0)
+
+	def setCondition(self, index):
+		success = True
+		for lint in self.conditions:
+			success &= lint.select(index)
+		self.generate()
+		return success
+
+	def setInstance(self, index):
 		success = True
 		for lint in self.lints:
 			success &= lint.decode(index)
@@ -81,11 +98,12 @@ class Fuzz:
 	def randomize(self):
 		while True:
 			index = random.getrandbits(self.bits)
-			if self.select(index):
+			if self.setInstance(index):
 				break
 
-	def fuzz(self, template):
-		pass
+	def generate(self):
+		self.executor.input = self.executor.generator.generate_test_json(self.executor.template)
+
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(
@@ -103,16 +121,14 @@ if __name__ == '__main__':
 				 for f in os.listdir('./fuzz_templates')
 				 if f.endswith('yml')]
 		files.sort()
-	print(files)
-
+	pp = pprint.PrettyPrinter(indent=2)
 	fuzz = Fuzz(config_filename)
 	for test_path in files:
 		template_name = os.path.basename(test_path).split('.')[0]
 		print(f'Generating {template_name} for {fuzz.executor.locality}')
 		fuzz.load(test_path)
-		for _ in range(1,10):
-			fuzz.randomize()
-			print({
-				'adult' : fuzz.template['test_inputs'][0]['persons'][0]['is_pregnant'],
-				'child' : fuzz.template['test_inputs'][0]['persons'][1]['lives_in_state']
-				})
+		pp.pprint(fuzz.executor.template)
+		fuzz.setCondition(1)
+		fuzz.randomize()
+		pp.pprint(fuzz.executor.input)
+		# print(fuzz.executor.exec())
