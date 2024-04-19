@@ -1,6 +1,7 @@
 import argparse
+import math
 import os
-import pprint 
+import random
 
 import endpoints
 import protocols
@@ -17,15 +18,72 @@ class Fuzz:
 
 	def __init__(
 			self,
-			config_filename = "localities/config_nj.yml",
-			test_path = 'fuzz_templates/00001.yml'):
+			config_filename = "localities/config_nj.yml"):
 		self.executor = Executor(config_filename)
-		self.template = self.parse_template(test_path)
 
-	def parse_template(self, test_path):
-		test_case_template = self.executor.generator.parse_test_template(test_path)
+	class Lint:
+		def __init__(self, base, host, key):
+			self.base = base
+			self.host = host
+			self.key = key
+			self.options = host[key]['fuzz']
+			self.cardinality = len(self.options)
+			self.bits = math.ceil(math.log2(self.cardinality))
+			self.mask = int(math.pow(2, self.bits)) - 1
 
+		def select(self, i):
+			if i > self.cardinality:
+				breakpoint()
+				return False
+			self.host[self.key] = self.options[i]
+			return True
+
+		def decode(self, code):
+			i = (code >> self.base) & self.mask
+			return self.select(i)
+
+	def isfuzz(obj):
+		return isinstance(obj, dict) and len(obj.keys()) == 1 and 'fuzz' in obj
+
+	def compile(self, obj, host=None, key=None):
+		if Fuzz.isfuzz(obj):
+			if host is None:
+				raise ValueError("can't fuzz a root")
+			lint = self.Lint(self.bits, host, key)
+			self.bits += lint.bits
+			self.lints.append(lint)
+		elif isinstance(obj, dict):
+			for k in obj.keys():
+				self.compile(obj[k], obj, k)
+		elif isinstance(obj, list):
+			for item in obj:
+				# no fuzz in arrays yet
+				self.compile(item, None, None)
+		else:
+			pass
+
+	def load(self, test_path):
+		self.lints = []
+		self.bits = 0
+		self.cardinality = 1
+		self.template = self.executor.generator.parse_test_template(test_path)
+		self.compile(self.template)
+		for lint in self.lints:
+			lint.select(0)
+			self.cardinality *= lint.cardinality
 		
+	def select(self, index):
+		success = True
+		for lint in self.lints:
+			success &= lint.decode(index)
+		return success
+
+	def randomize(self):
+		while True:
+			index = random.getrandbits(self.bits)
+			if self.select(index):
+				break
+
 	def fuzz(self, template):
 		pass
 
@@ -38,7 +96,6 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 
 	config_filename = args.config
-	fuzz = Fuzz(config_filename)
 	if args.test is not None:
 		files = [ args.test ]
 	else:
@@ -47,14 +104,15 @@ if __name__ == '__main__':
 				 if f.endswith('yml')]
 		files.sort()
 	print(files)
-	
-	pp = pprint.PrettyPrinter(indent=2)
 
+	fuzz = Fuzz(config_filename)
 	for test_path in files:
 		template_name = os.path.basename(test_path).split('.')[0]
 		print(f'Generating {template_name} for {fuzz.executor.locality}')
-		test_case_template = fuzz.executor.generator.parse_test_template(test_path)
-		pp.pprint(test_case_template)
-		breakpoint()
-		fuzz.fuzz(test_case_template)
-		print(test_case_template['test_inputs'][0]['persons'][0]['is_medicare_eligible'])
+		fuzz.load(test_path)
+		for _ in range(1,10):
+			fuzz.randomize()
+			print({
+				'adult' : fuzz.template['test_inputs'][0]['persons'][0]['is_pregnant'],
+				'child' : fuzz.template['test_inputs'][0]['persons'][1]['lives_in_state']
+				})
