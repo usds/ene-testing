@@ -5,6 +5,9 @@
 version: 1
 
 fpl_tables:
+  2021:
+    base: 12880
+    increment: 4540
   2022:
     base: 13590
     increment: 4720
