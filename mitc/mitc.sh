@@ -21,6 +21,12 @@ mitc_down() {
     echo "mitc has been stopped"
 }
 
+mitc_clean() {
+    echo "removing the mitc container"
+    docker rm mitc
+    echo "mitc has been cleaned"
+}
+
 mitc_up() {
     echo "starting mitc test server"
     cd $DOCKER_ROOT
@@ -64,6 +70,14 @@ stop)
         mitc_down
     else
         echo "mitc is already stopped"
+    fi
+    ;;
+clean)
+    if mitc_is_up;
+    then
+        mitc_down
+    else
+        mitc_clean
     fi
     ;;
 status)
