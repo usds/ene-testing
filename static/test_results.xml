@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="0.349" timestamp="2024-04-19T17:59:31.680954" hostname="wpc-linux-03"><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_aa.yml-test_templates/00001.yml]" time="0.016"><failure message="AssertionError: ['Healthcare is a human right.']&#10;assert False == True">self = &lt;test_exec.TestExecutor object at 0x72f02f0347f0&gt;, locality = 'localities/config_aa.yml'
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="0.265" timestamp="2024-04-22T18:51:26.494448" hostname="wpc-linux-03"><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_aa.yml-test_templates/00001.yml]" time="0.017"><failure message="AssertionError: ['Healthcare is a human right.']&#10;assert False == True">self = &lt;test_exec.TestExecutor object at 0x736d38f9a500&gt;, locality = 'localities/config_aa.yml'
 template = 'test_templates/00001.yml'
 
     @pytest.mark.parametrize("locality,template", test_cases)
@@ -17,4 +17,4 @@ template = 'test_templates/00001.yml'
 E           AssertionError: ['Healthcare is a human right.']
 E           assert False == True
 
-test_exec.py:26: AssertionError</failure></testcase><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_aa.yml-test_templates/00002.yml]" time="0.015" /><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_nj.yml-test_templates/00001.yml]" time="0.027" /><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_nj.yml-test_templates/00002.yml]" time="0.030" /></testsuite></testsuites>
+test_exec.py:26: AssertionError</failure></testcase><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_aa.yml-test_templates/00002.yml]" time="0.016" /><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_nj.yml-test_templates/00001.yml]" time="0.029" /><testcase classname="test_exec.TestExecutor" name="test_response[localities/config_nj.yml-test_templates/00002.yml]" time="0.028" /></testsuite></testsuites>

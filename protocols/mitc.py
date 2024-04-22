@@ -143,6 +143,7 @@ def produce_income(usds):
 REL_CODES = {
     "parent": "03",
     "child": "04",
+    "sibling": "07",
 }
 def produce_relations(usds):
     mitc = []

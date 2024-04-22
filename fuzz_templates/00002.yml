@@ -52,7 +52,7 @@ test_inputs:
           amount: 0
       relationships:
         - person_id: 2
-          relationship_code: 3 # parent
+          relationship_code: parent
           attests_responsibility: { 'fuzz': [true, false] }
     - person_id: 2
       is_applicant: true
@@ -105,7 +105,7 @@ test_inputs:
           amount: 0
       relationships:
         - person_id: 1
-          relationship_code: 4 # child
+          relationship_code: child
           attests_responsibility: false
 test_outputs:
   - person_id: 1

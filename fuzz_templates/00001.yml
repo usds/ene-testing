@@ -29,7 +29,7 @@ test_inputs:
         - type: monthly_income
           amount: 0
         - type: wages_salary_tips
-          amount: { 'fuzz-condition': [ 1000, child_limit- ] }
+          amount: { 'fuzz-condition': [ adult_limit-, child_limit- ] }
         - type: taxable_interest
           amount: 0
         - type: tax_exempt_interest
@@ -52,7 +52,7 @@ test_inputs:
           amount: 0
       relationships:
         - person_id: 2
-          relationship_code: 3 # parent
+          relationship_code: parent
           attests_responsibility: { 'fuzz': [true, false] }
     - person_id: 2
       is_applicant: true
@@ -105,7 +105,7 @@ test_inputs:
           amount: 0
       relationships:
         - person_id: 1
-          relationship_code: 4 # child
+          relationship_code: child
           attests_responsibility: false
 test_outputs:
   - person_id: 1

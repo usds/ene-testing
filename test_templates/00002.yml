@@ -54,10 +54,10 @@ test_inputs:
           amount: 0
       relationships:
         - person_id: 2
-          relationship_code: 3 # parent
+          relationship_code: parent
           attests_responsibility: false
         - person_id: 3
-          relationship_code: 3 # parent
+          relationship_code: parent
           attests_responsibility: false
     - person_id: 2
       is_applicant: true
@@ -105,10 +105,10 @@ test_inputs:
           amount: 0
       relationships:
         - person_id: 1
-          relationship_code: 4 # child
+          relationship_code: child
           attests_responsibility: false
         - person_id: 3
-          relationship_code: 7 # sibling
+          relationship_code: sibling
           attests_responsibility: false
     - person_id: 3
       is_applicant: true
@@ -156,10 +156,10 @@ test_inputs:
           amount: 0
       relationships:
         - person_id: 1
-          relationship_code: 4 # child
+          relationship_code: child
           attests_responsibility: false
         - person_id: 2
-          relationship_code: 7 # sibling
+          relationship_code: sibling
           attests_responsibility: false
 test_outputs:
   - person_id: 1
