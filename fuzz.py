@@ -79,7 +79,8 @@ class Fuzz:
 		self.compile(self.executor.template)
 		for lint in self.lints:
 			self.cardinality *= lint.cardinality
-		self.setInstance(0)
+		self.index_limit = math.pow(2, self.bits)
+		self.first()
 		self.setCondition(0)
 
 	def setCondition(self, index):
@@ -90,10 +91,24 @@ class Fuzz:
 		return success
 
 	def setInstance(self, index):
+		self.index = index
 		success = True
 		for lint in self.lints:
 			success &= lint.decode(index)
 		return success
+
+	def first(self):
+		self.setInstance(0)
+
+	def next(self):
+		self.index += 1
+		if self.index >= self.cardinality:
+			return False
+		while not self.setInstance(self.index):
+			self.index += 1
+			if self.index >= self.index_limit:
+				return False
+		return True
 
 	def randomize(self):
 		while True:
@@ -125,6 +140,7 @@ if __name__ == '__main__':
 		files.sort()
 	pp = pprint.PrettyPrinter(indent=2)
 	fuzz = Fuzz(config_filename)
+
 	for test_path in files:
 		template_name = os.path.basename(test_path).split('.')[0]
 		print(f'Generating {template_name} for {fuzz.executor.locality}')
@@ -137,7 +153,15 @@ if __name__ == '__main__':
 		valid = 0
 		correct = 0
 		for i in range(n):
-			candidate = fuzz.randomize()
+			if args.num is None:
+				candidate = i
+				if i == 0:
+					fuzz.first()
+				else:
+					fuzz.next()
+			else:
+				candidate = fuzz.randomize()
+			print(fuzz.index)
 			fuzz.setCondition(0)
 			artifacts = fuzz.executor.exec()
 			is_valid = True
