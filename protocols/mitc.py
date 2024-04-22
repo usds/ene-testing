@@ -1,4 +1,5 @@
 # MITC format is the JSON used by https://github.com/HHSIDEAlab/medicaid_eligibility
+import pprint
 
 class MITC:
     def produce(usds):
@@ -20,7 +21,7 @@ class MITC:
         mitc['People'] = []
         for usds_house in usds['test_inputs']:
             mitc_house = {
-                'Household ID': usds_house['household_id'],
+                'Household ID': f"Household{usds_house['household_id']}",
                 'People': [],
             }
             for usds_person in usds_house['persons']:
@@ -139,6 +140,10 @@ def produce_income(usds):
         mitc[IMCOME_TYPES[source['type']]] = source['amount']
     return mitc
 
+REL_CODES = {
+    "parent": "03",
+    "child": "04",
+}
 def produce_relations(usds):
     mitc = []
     for link in usds:
@@ -146,7 +151,7 @@ def produce_relations(usds):
             {
                 'Attest Primary Responsibility': bool2mitc(link['attests_responsibility']),
                 'Other ID': link['person_id'],
-                'Relationship Code': link['relationship_code'],
+                'Relationship Code': REL_CODES[link['relationship_code']],
             }
         )
     return mitc
