@@ -33,7 +33,6 @@ class MITC:
         
     def consume(mitc):
         usds = []
-        breakpoint()
         for person in mitc['Applicants']:
             p = {
                 'person_id': person['Person ID'],
@@ -44,7 +43,7 @@ class MITC:
                 },
                 'is_eligible': is_eligibile(person),
                 'category': person["Category"],
-                'category_threshold': person["Category Threshold"],
+                'category_threshold': person["Category Threshold"] if "Category Threshold" in person else 0,
                 'medicaid_eligible': mitc2bool(person["Medicaid Eligible"]),
                 'ineligibility_reasons': person["Ineligibility Reason"]
                     if "Ineligibility Reason" in person else None,
@@ -93,8 +92,14 @@ def produce_person(usds):
     mitc['Applicant Attest Long Term Care'] = bool2mitc(usds['long_term_care'])
     mitc['Applicant Post Partum Period Indicator'] = bool2mitc(usds['is_post_partum'])
     mitc['Applicant Pregnant Indicator'] = bool2mitc(usds['is_pregnant'])
+    if usds['is_pregnant']:
+        mitc['Number of Children Expected'] = usds['num_expected']
     mitc['Claimed as Dependent by Person Not on Application'] = bool2mitc(usds['claimed_dependent'])
     mitc['Former Foster Care'] = bool2mitc(usds['former_foster_care'])
+    if usds['former_foster_care']:
+        mitc['Age Left Foster Care'] = usds['age_left_foster_care']
+        mitc['Foster Care State'] = usds['foster_care_state']
+        mitc['Had Medicaid During Foster Care'] = bool2mitc(usds['had_medicaid_during_foster_care'])
     mitc['Has Insurance'] = bool2mitc(usds['has_insurance'])
     mitc['Hours Worked Per Week'] = usds['weekly_work_hours']
     mitc['Incarceration Status'] = bool2mitc(usds['is_incarcerated'])
@@ -104,6 +109,8 @@ def produce_person(usds):
     mitc['Medicare Entitlement Indicator'] = bool2mitc(usds['is_medicare_eligible'])
     mitc['Person ID'] = usds['person_id']
     mitc['Prior Insurance'] = bool2mitc(usds['prior_insurance'])
+    if usds['prior_insurance']:
+        mitc['Prior Insurance End Date'] = usds['prior_insurance_end_date']
     mitc['Relationships'] = produce_relations(usds['relationships'])
     mitc['Required to File Taxes'] = bool2mitc(usds['must_file_taxes'])
     mitc['State Health Benefits Through Public Employee'] = bool2mitc(usds['state_health_benefits'])
