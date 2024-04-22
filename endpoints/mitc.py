@@ -13,4 +13,9 @@ class MITC:
             'http://127.0.0.1:3000/determinations/eval.json',
             json=data,
         )
+        if resp.status_code != 200:
+            if resp.text and 'Error' in resp.json():
+                raise ValueError(resp.json()['Error'])
+            else:
+                raise EOFError
         return resp.json() if resp.text else ''
