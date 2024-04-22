@@ -17,10 +17,11 @@ test_inputs:
       long_term_care: { 'fuzz': [true, false] }
       has_insurance: { 'fuzz': [true, false] }
       state_health_benefits: { 'fuzz': [true, false] }
-      prior_insurance: { 'fuzz': [true, false] }
+      prior_insurance: false
       is_pregnant: { 'fuzz': [true, false] }
+      num_expected: 1
       is_post_partum: { 'fuzz': [true, false] }
-      former_foster_care: { 'fuzz': [true, false] }
+      former_foster_care: false
       must_file_taxes: { 'fuzz': [true, false] }
       is_citizen: false
       weekly_work_hours: { 'fuzz': [0, 20, 40, 60] }
@@ -66,9 +67,14 @@ test_inputs:
       has_insurance: { 'fuzz': [true, false] }
       state_health_benefits: { 'fuzz': [true, false] }
       prior_insurance: { 'fuzz': [true, false] }
+      prior_insurance_end_date: 1/1/2019
       is_pregnant: { 'fuzz': [true, false] }
+      num_expected: 1
       is_post_partum: false
       former_foster_care: { 'fuzz': [true, false] }
+      age_left_foster_care: 10
+      foster_care_state: MA
+      had_medicaid_during_foster_care: false
       must_file_taxes: false
       is_citizen: true
       weekly_work_hours: 0

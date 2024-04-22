@@ -99,9 +99,10 @@ class Fuzz:
 		while True:
 			index = random.getrandbits(self.bits)
 			if self.setInstance(index):
-				break
+				return index
 
 	def generate(self):
+
 		self.executor.input = self.executor.generator.generate_test_json(self.executor.template)
 
 
@@ -111,8 +112,9 @@ if __name__ == '__main__':
 		description='Combine templates with a locality config and then fuzz the test data')
 	parser.add_argument('-c', '--config', default='localities/config_nj.yml')
 	parser.add_argument('-t', '--test', default=None)
+	parser.add_argument('-d', '--debug', action=argparse.BooleanOptionalAction)
+	parser.add_argument('-n', '--num', default=None)
 	args = parser.parse_args()
-
 	config_filename = args.config
 	if args.test is not None:
 		files = [ args.test ]
@@ -127,8 +129,39 @@ if __name__ == '__main__':
 		template_name = os.path.basename(test_path).split('.')[0]
 		print(f'Generating {template_name} for {fuzz.executor.locality}')
 		fuzz.load(test_path)
-		pp.pprint(fuzz.executor.template)
-		fuzz.setCondition(1)
-		fuzz.randomize()
-		pp.pprint(fuzz.executor.input)
-		# print(fuzz.executor.exec())
+		# pp.pprint(fuzz.executor.template)
+		print(f'there are {fuzz.cardinality} possibilities')
+		n = int(args.num) if args.num is not None else fuzz.cardinality
+		print(f'evaluating {n} cases')
+		random.seed()
+		valid = 0
+		correct = 0
+		for i in range(n):
+			candidate = fuzz.randomize()
+			fuzz.setCondition(0)
+			artifacts = fuzz.executor.exec()
+			is_valid = True
+			for result in artifacts['actual']:
+				is_valid = is_valid and result['is_eligible']
+				if args.debug and not result['is_eligible']:
+					pp.pprint(result)
+					print('pre condition')
+					breakpoint()
+			if is_valid:
+				valid += 1
+				fuzz.setCondition(1)
+				artifacts = fuzz.executor.exec()
+				is_correct = True
+				expected = {}
+				for expectation in artifacts['expected']:
+					expected[expectation['person_id']] = expectation
+				for result in artifacts['actual']:
+					is_correct = is_correct and expected[result['person_id']]['is_eligible'] == result['is_eligible']
+					if args.debug and expected[result['person_id']]['is_eligible'] != result['is_eligible']:
+						pp.pprint(result)
+						print('post condition')
+						breakpoint()
+				if is_correct:
+					correct += 1
+		print(f'out of {n} cases, {valid} had valid pre-test outcomes')
+		print(f'out of {valid} cases, {correct} had correct post-test outcomes')

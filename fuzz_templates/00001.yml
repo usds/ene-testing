@@ -7,20 +7,21 @@ test_inputs:
     persons:
     - person_id: 1
       is_applicant: true
-      age: { 'fuzz': [45, 95] }
+      age: 45
       has_abd_status: { 'fuzz': [true, false] }
       is_student: { 'fuzz': [true, false] }
-      is_medicare_eligible: { 'fuzz': [true, false] }
-      is_incarcerated: { 'fuzz': [true, false] }
-      lives_in_state: { 'fuzz': [true, false] }
+      is_medicare_eligible: false
+      is_incarcerated: false
+      lives_in_state: true
       claimed_dependent: { 'fuzz': [true, false] }
       long_term_care: { 'fuzz': [true, false] }
       has_insurance: { 'fuzz': [true, false] }
       state_health_benefits: { 'fuzz': [true, false] }
       prior_insurance: false
       is_pregnant: { 'fuzz': [true, false] }
+      num_expected: 1
       is_post_partum: { 'fuzz': [true, false] }
-      former_foster_care: { 'fuzz': [true, false] }
+      former_foster_care: false
       must_file_taxes: { 'fuzz': [true, false] }
       is_citizen: true
       weekly_work_hours: { 'fuzz': [0, 20, 40, 60] }
@@ -28,7 +29,7 @@ test_inputs:
         - type: monthly_income
           amount: 0
         - type: wages_salary_tips
-          amount: { 'fuzz-condition': [ adult_limit-, child_limit- ] }
+          amount: { 'fuzz-condition': [ 1000, child_limit- ] }
         - type: taxable_interest
           amount: 0
         - type: tax_exempt_interest
@@ -56,19 +57,24 @@ test_inputs:
     - person_id: 2
       is_applicant: true
       age: 10
-      has_abd_status: { 'fuzz': [true, false] }
-      is_student: { 'fuzz': [true, false] }
-      is_medicare_eligible: { 'fuzz': [true, false] }
-      is_incarcerated: { 'fuzz': [true, false] }
-      lives_in_state: { 'fuzz': [true, false] }
+      has_abd_status: false
+      is_student: false
+      is_medicare_eligible: false
+      is_incarcerated: false
+      lives_in_state: true
       claimed_dependent: { 'fuzz': [true, false] }
-      long_term_care: { 'fuzz': [true, false] }
-      has_insurance: { 'fuzz': [true, false] }
-      state_health_benefits: { 'fuzz': [true, false] }
-      prior_insurance: { 'fuzz': [true, false] }
-      is_pregnant: { 'fuzz': [true, false] }
+      long_term_care: false
+      has_insurance: false
+      state_health_benefits: false
+      prior_insurance: false
+      prior_insurance_end_date: 1/1/2019
+      is_pregnant: false
+      num_expected: 1
       is_post_partum: false
       former_foster_care: { 'fuzz': [true, false] }
+      age_left_foster_care: 10
+      foster_care_state: MA
+      had_medicaid_during_foster_care: false
       must_file_taxes: false
       is_citizen: true
       weekly_work_hours: 0
