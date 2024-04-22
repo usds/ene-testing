@@ -161,7 +161,6 @@ if __name__ == '__main__':
 					fuzz.next()
 			else:
 				candidate = fuzz.randomize()
-			print(fuzz.index)
 			fuzz.setCondition(0)
 			artifacts = fuzz.executor.exec()
 			is_valid = True
