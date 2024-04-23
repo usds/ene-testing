@@ -17,9 +17,8 @@ class Fuzz:
 	- repeat for every ambiguity in the template
 	"""
 
-	def __init__(
-			self,
-			config_filename = "localities/config_nj.yml"):
+	def __init__(self,
+			  config_filename = "localities/config_nj.yml"):
 		self.executor = Executor(config_filename)
 
 	class Lint:
@@ -35,10 +34,7 @@ class Fuzz:
 		def select(self, i):
 			if i >= self.cardinality:
 				return False
-			try:
-				self.host[self.key] = self.options[i]
-			except IndexError:
-				breakpoint()
+			self.host[self.key] = self.options[i]
 			return True
 
 		def decode(self, code):
