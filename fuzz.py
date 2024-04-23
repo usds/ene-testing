@@ -33,9 +33,12 @@ class Fuzz:
 			self.mask = int(math.pow(2, self.bits)) - 1
 
 		def select(self, i):
-			if i > self.cardinality:
+			if i >= self.cardinality:
 				return False
-			self.host[self.key] = self.options[i]
+			try:
+				self.host[self.key] = self.options[i]
+			except IndexError:
+				breakpoint()
 			return True
 
 		def decode(self, code):
@@ -83,6 +86,12 @@ class Fuzz:
 		self.first()
 		self.setCondition(0)
 
+	def setPreCondition(self):
+		self.setCondition(0)
+
+	def setPostCondition(self):
+		self.setCondition(1)
+
 	def setCondition(self, index):
 		success = True
 		for lint in self.conditions:
@@ -117,7 +126,6 @@ class Fuzz:
 				return index
 
 	def generate(self):
-
 		self.executor.input = self.executor.generator.generate_test_json(self.executor.template)
 
 
@@ -125,10 +133,18 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(
 		prog='generator.py',
 		description='Combine templates with a locality config and then fuzz the test data')
-	parser.add_argument('-c', '--config', default='localities/config_nj.yml')
-	parser.add_argument('-t', '--test', default=None)
-	parser.add_argument('-d', '--debug', action=argparse.BooleanOptionalAction)
-	parser.add_argument('-n', '--num', default=None)
+	parser.add_argument('-c', '--config', default='localities/config_nj.yml',
+					 help='select the locality config for the run')
+	parser.add_argument('-t', '--test', default=None, required=True,
+					 help='the fuzz test description')
+	parser.add_argument('-n', '--num', default=None,
+					 help='execute N tests, if N is >+ cardinality, test all possibilities in order, otherwise test a random sample')
+	parser.add_argument('-s', '--seed', default=None,
+					 help='select a specific seed for repeatable runs, or omit for random seed')
+	parser.add_argument('-d', '--debug',
+					 action=argparse.BooleanOptionalAction,
+					 help='print state and break on invalid and incorrect results')
+
 	args = parser.parse_args()
 	config_filename = args.config
 	if args.test is not None:
@@ -138,6 +154,7 @@ if __name__ == '__main__':
 				 for f in os.listdir('./fuzz_templates')
 				 if f.endswith('yml')]
 		files.sort()
+
 	pp = pprint.PrettyPrinter(indent=2)
 	fuzz = Fuzz(config_filename)
 
@@ -145,15 +162,18 @@ if __name__ == '__main__':
 		template_name = os.path.basename(test_path).split('.')[0]
 		print(f'Generating {template_name} for {fuzz.executor.locality}')
 		fuzz.load(test_path)
-		# pp.pprint(fuzz.executor.template)
 		print(f'there are {fuzz.cardinality} possibilities')
+
 		n = int(args.num) if args.num is not None else fuzz.cardinality
+		n = min(n, fuzz.cardinality)
 		print(f'evaluating {n} cases')
-		random.seed()
+
+		random.seed(args.seed)
+
 		valid = 0
 		correct = 0
 		for i in range(n):
-			if args.num is None:
+			if n == fuzz.cardinality:
 				candidate = i
 				if i == 0:
 					fuzz.first()
@@ -161,7 +181,9 @@ if __name__ == '__main__':
 					fuzz.next()
 			else:
 				candidate = fuzz.randomize()
-			fuzz.setCondition(0)
+
+			# test pre-condition to determine if the template is valid
+			fuzz.setPreCondition()
 			artifacts = fuzz.executor.exec()
 			is_valid = True
 			for result in artifacts['actual']:
@@ -170,9 +192,11 @@ if __name__ == '__main__':
 					pp.pprint(result)
 					print('pre condition')
 					breakpoint()
+
 			if is_valid:
+				# test post-condition to determine if the outcome is correct
 				valid += 1
-				fuzz.setCondition(1)
+				fuzz.setPostCondition()
 				artifacts = fuzz.executor.exec()
 				is_correct = True
 				expected = {}
@@ -186,5 +210,6 @@ if __name__ == '__main__':
 						breakpoint()
 				if is_correct:
 					correct += 1
+
 		print(f'out of {n} cases, {valid} had valid pre-test outcomes')
 		print(f'out of {valid} cases, {correct} had correct post-test outcomes')
