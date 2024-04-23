@@ -7,10 +7,10 @@ test_inputs:
     persons:
     - person_id: 1
       is_applicant: true
-      age: 45
+      age: { 'fuzz': [25, 45, 95] }
       has_abd_status: { 'fuzz': [true, false] }
       is_student: { 'fuzz': [true, false] }
-      is_medicare_eligible: false
+      is_medicare_eligible: { 'fuzz': [true, false] }
       is_incarcerated: false
       lives_in_state: true
       claimed_dependent: { 'fuzz': [true, false] }
@@ -23,7 +23,7 @@ test_inputs:
       is_post_partum: { 'fuzz': [true, false] }
       former_foster_care: false
       must_file_taxes: { 'fuzz': [true, false] }
-      is_citizen: true
+      is_citizen: { 'fuzz': [true, false] }
       weekly_work_hours: { 'fuzz': [0, 20, 40, 60] }
       income_distribution:
         - type: monthly_income
